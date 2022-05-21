@@ -1,4 +1,18 @@
 {
   "polls": [
+    {
+      "prompt": "What is Python?",
+      "options": [
+        {
+          "id": "e6410340-5c69-4112-b5dd-205c339867a2",
+          "value": "Programming language"
+        },
+        {
+          "id": "1122a11c-96de-4750-b0e5-026acfd328bf",
+          "value": "Snake"
+        }
+      ],
+      "id": 1
+    }
   ]
 }

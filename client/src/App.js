@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
+import pollService from './services/polls'
 
 const Header = ({ text }) => <h1 className="display-1 mt-4">{text}</h1>
 
@@ -81,9 +82,13 @@ const App = () => {
       setError('Please provide atleast 2 options!')
       return
     }
-    console.log(prompt)
-    console.log(options)
-    // make api call to backend to create poll
+    pollService.create({ prompt, options })
+      .then((savedPoll) => {
+        console.log(savedPoll)
+        setPrompt('')
+        setOptions([])
+      })
+      .catch((response) => console.log(response))
   }
 
   return (
