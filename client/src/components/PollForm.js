@@ -62,7 +62,7 @@ const PollForm = () => {
       <input value={question} onChange={changeQuestion} id="question" type="text" name="question" placeholder="Your question here..." className="form-control form-control-lg" required/>
 
       <div className="mt-2" id="options-container">
-        <FlipMove duration="650">
+        <FlipMove>
           {options.map(({ id, value }) => {
             return <Option key={id} id={id} value={value} onChange={changeOption} onClick={removeOption}/>
           })}
