@@ -73,7 +73,6 @@
 }
 
 .option-background {
-  width: 30%;
   padding: 32px 0px;
   transition: all 800ms;
   background-color: rgba(230, 230, 230, 0.4);

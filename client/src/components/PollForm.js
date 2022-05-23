@@ -1,17 +1,21 @@
-import { useState } from 'react'
+import { useState, forwardRef, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { v4 as uuid } from 'uuid'
 import { toast } from 'react-toastify'
+import FlipMove from 'react-flip-move'
 import pollService from '../services/poll'
 
-const Option = ({ id, value, onChange, onClick }) => {
+const Option = forwardRef(({ id, value, onChange, onClick }, ref) => {
+  const inputRef = useRef(null)
+  const focusInput = () => inputRef.current.focus()
+
   return (
-    <div className="option-card d-flex mt-2">
-      <input id={id} value={value} onChange={onChange} className="form-control" required/>
+    <div className="option-card d-flex mt-2" onClick={focusInput} ref={ref}>
+      <input id={id} value={value} onChange={onChange} className="form-control" ref={inputRef} required/>
       <i className="close-btn bi bi-x-lg" onClick={onClick}></i>
     </div>
   )
-}
+})
 
 const PollForm = () => {
   const [error, setError] = useState(null)
@@ -58,9 +62,11 @@ const PollForm = () => {
       <input value={question} onChange={changeQuestion} id="question" type="text" name="question" placeholder="Your question here..." className="form-control form-control-lg" required/>
 
       <div className="mt-2" id="options-container">
-        {options.map(({ id, value }) => {
-          return <Option id={id} key={id} value={value} onClick={removeOption} onChange={changeOption}/>
-        })}
+        <FlipMove duration="650">
+          {options.map(({ id, value }) => {
+            return <Option key={id} id={id} value={value} onChange={changeOption} onClick={removeOption}/>
+          })}
+        </FlipMove>
 
         <div id="add-option-card" onClick={addOption} className="option-card mt-2 justify-content-center">
           <i className="bi bi-plus-lg"></i>

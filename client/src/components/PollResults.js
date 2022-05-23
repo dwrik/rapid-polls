@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, forwardRef } from 'react'
 import { useParams } from 'react-router'
 import { toast } from 'react-toastify'
+import FlipMove from 'react-flip-move'
 import pollService from '../services/poll'
 import NotFound from './NotFound'
 
@@ -23,14 +24,12 @@ const PollSwitch = ({ poll, setPoll }) => {
   )
 }
 
-const Option = ({ id, value }) => {
-  return (
-    <div id={id} className="option-card option-card-result mt-2">
-      <div className='option-background'></div>
-      <div className='option-text'>{value}</div>
-    </div>
-  )
-}
+const Option = forwardRef(({ id, value }, ref) => (
+  <div id={id} ref={ref} className="option-card option-card-result mt-2">
+    <div className='option-background' style={{width: `${Math.random() * 100}%`}}></div>
+    <div className='option-text'>{value}</div>
+  </div>
+))
 
 const PollResults = ({ canManage }) => {
   const [poll, setPoll] = useState(null)
@@ -55,9 +54,11 @@ const PollResults = ({ canManage }) => {
         {canManage ? <PollSwitch poll={poll} setPoll={setPoll}/> : null}
       </div>
       <div className="mt-4" id="options-container">
-        {poll.options.map(({ id, value }) => {
-          return <Option id={id} key={id} value={value} />
-        })}
+        <FlipMove duration="650">
+          {poll.options.map(({ id, value }) => {
+            return <Option id={id} key={id} value={value}/>
+          })}
+        </FlipMove>
       </div>
     </div>
   )
