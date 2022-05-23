@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import { v4 as uuid } from 'uuid'
 import { toast } from 'react-toastify'
 import pollService from '../services/poll'
@@ -16,6 +17,7 @@ const PollForm = () => {
   const [error, setError] = useState(null)
   const [question, setQuestion] = useState('')
   const [options, setOptions] = useState([])
+  const navigate = useNavigate()
 
   const changeQuestion = (event) => {
     setQuestion(event.target.value)
@@ -46,6 +48,7 @@ const PollForm = () => {
         setQuestion('')
         setOptions([])
         toast.success('Poll created')
+        navigate(`/manage/${saved.id}`)
       })
       .catch((response) => console.log(response))
   }
