@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
+const pollsRouter = require('./controllers/pollsRouter')
+const cors = require('cors')
 
 logger.info('Connecting to database...')
 
@@ -13,10 +15,11 @@ mongoose.connect(config.MONGO_URI)
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 app.use(middleware.requestLogger)
 
-// routers, controllers
+app.use('/api/polls', pollsRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
