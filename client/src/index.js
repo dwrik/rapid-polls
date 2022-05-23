@@ -9,6 +9,7 @@ import App from './App'
 import NotFound from './components/NotFound'
 
 import View from './routes/view'
+import Vote from './routes/vote'
 import Create from './routes/create'
 import Manage from './routes/manage'
 
@@ -28,6 +29,7 @@ root.render(
         <Route path="create" element={<Create/>}/>
         <Route path="manage/:id" element={<Manage/>}/>
         <Route path="view/:id" element={<View/>}/>
+        <Route path="vote/:id" element={<Vote/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Route>
     </Routes>
