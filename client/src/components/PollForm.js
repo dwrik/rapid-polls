@@ -33,7 +33,7 @@ const PollForm = () => {
 
   const addOption = () => {
     options.length === 1 && setError(null)
-    setOptions([ ...options, { id: uuid(), value: '' } ])
+    setOptions([ ...options, { id: uuid(), value: '', count: 0 } ])
   }
 
   const removeOption = ({ target }) => {
@@ -46,7 +46,7 @@ const PollForm = () => {
       setError('Please provide atleast 2 options!')
       return
     }
-    pollService.create({ question, options })
+    pollService.create({ question, options, active: false })
       .then((saved) => {
         console.log(saved)
         setQuestion('')
