@@ -1,19 +1,19 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3004'
+const baseUrl = '/api/polls'
 
 const get = async (id) => {
-  const response = axios.get(`${baseUrl}/polls/${id}`)
+  const response = axios.get(`${baseUrl}/${id}`)
   return response.then((response) => response.data)
 }
 
 const create = async (poll) => {
-  const response = axios.post(`${baseUrl}/polls`, poll)
+  const response = axios.post(baseUrl, poll)
   return response.then((response) => response.data)
 }
 
 const update = async (modified) => {
-  const response = axios.put(`${baseUrl}/polls/${modified.id}`, modified)
+  const response = axios.put(`${baseUrl}/${modified.id}`, modified)
   return response.then((response) => response.data)
 }
 
