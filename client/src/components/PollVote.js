@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
-import NotFound from './NotFound'
+import Error from './Error'
 import pollService from '../services/poll'
+import voteService from '../services/vote'
 
 const Option = ({ id, value, onClick, isSelected }) => {
   return (
@@ -13,7 +14,8 @@ const Option = ({ id, value, onClick, isSelected }) => {
 
 const PollVote = () => {
   const [poll, setPoll] = useState(null)
-  const [optionId, setOptionId] = useState(null)
+  const [option, setOption] = useState(null)
+  const [error, setError] = useState(null)
   const { id } = useParams()
 
   useEffect(() => {
@@ -22,26 +24,52 @@ const PollVote = () => {
       .catch((response) => console.log(response))
   }, [id])
 
-  const changeOptionId = (event) => {
-    setOptionId(event.target.id)
+  const changeOption = (event) => {
+    const [option] = poll.options.filter((option) => option.id === event.target.id)
+    setOption(option)
+    setError(null)
   }
 
-  const castVote = () => {
-    // api call for voting
-    // two different ways:
-    //  - update entire poll object
-    //  - send only the poll id and option id in payload
-
-    // upon successfull voting:
-    //  - thank you message
-    //  - link to results page
-
-    // if poll present but poll is not
-    // active show a poll ended message
+  const castVote = (event) => {
+    event.preventDefault()
+    if (option === null) {
+      setError('Please select an option first')
+      return
+    }
+    voteService.vote(id, option)
+      .then((response) => {
+        console.log(response)
+        // upon successfull voting:
+        //  - thank you message
+        //  - link to results page
+      })
+      .catch((error) => setError(error.response.data.error))
   }
 
   if (poll === null) {
-    return <NotFound topMargin={0}/>
+    return <Error topMargin={0}/>
+  }
+  
+  if (poll.state === 'prior') {
+    return (
+      <Error>
+        <p className='lead text-center'>
+          You're a bit too early.<br/>
+          The poll hasn't started yet!
+        </p>
+      </Error>
+    )
+  }
+  
+  if (poll.state === 'ended') {
+    return (
+      <Error>
+        <p className='lead text-center'>
+          Seems like you're a bit too late.<br/>
+          The poll has already ended {':('}
+        </p>
+      </Error>
+    )
   }
 
   return (
@@ -52,9 +80,11 @@ const PollVote = () => {
 
       <div className="mt-4" id="options-container">
         {poll.options.map(({ id, value }) => {
-          return <Option id={id} key={id} value={value} onClick={changeOptionId} isSelected={id === optionId}/>
+          return <Option id={id} key={id} value={value} onClick={changeOption} isSelected={option != null && id === option.id}/>
         })}
       </div>
+
+      {error ? <div className="mt-2 text-danger">{error}</div> : null}
 
       <input className="btn btn-success btn-lg mt-4 col-12" type="submit" value="Vote"/>
     </form>
