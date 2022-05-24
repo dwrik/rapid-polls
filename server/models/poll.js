@@ -5,19 +5,31 @@ const pollSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  active: {
-    type: Boolean,
-    required: true,
-  },
   options: {
-    type: [
-      {
-        value: { type: String, required: true },
-        count: { type: Number, required: true },
+    type: [{
+      value: {
+        type: String,
+        required: true
       },
-    ],
+      count: {
+        type: Number,
+        default: 0
+      },
+    }],
     required: true,
     minlength: 2,
+  },
+  state: {
+    type: String,
+    default: 'prior',
+    enum: {
+      values: ['prior', 'started', 'ended'],
+      message: '{VALUE} is not supported',
+    },
+  },
+  totalVotes: {
+    type: Number,
+    default: 0,
   }
 })
 
