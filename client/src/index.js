@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 
 import App from './App'
-import NotFound from './components/NotFound'
+import Error from './components/Error'
 
 import View from './routes/view'
 import Vote from './routes/vote'
@@ -30,7 +30,7 @@ root.render(
         <Route path="manage/:id" element={<Manage/>}/>
         <Route path="view/:id" element={<View/>}/>
         <Route path="vote/:id" element={<Vote/>}/>
-        <Route path="*" element={<NotFound/>}/>
+        <Route path="*" element={<Error/>}/>
       </Route>
     </Routes>
   </BrowserRouter>
