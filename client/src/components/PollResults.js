@@ -3,23 +3,27 @@ import { useParams } from 'react-router'
 import { toast } from 'react-toastify'
 import FlipMove from 'react-flip-move'
 import pollService from '../services/poll'
-import NotFound from './NotFound'
+import Error from './Error'
 
 const PollSwitch = ({ poll, setPoll }) => {
   const togglePoll = () => {
-    const modified = { ...poll, active: !poll.active }
+    const modified = {
+      ...poll,
+      state: poll.state === 'prior' ? 'started' : 'ended'
+    }
     pollService.update(modified)
       .then((updated) => {
         setPoll(updated)
-        updated.active
+        updated.state === 'started'
           ? toast.success('Poll started')
           : toast.error('Poll ended')
       })
+      .catch((error) => console.log(error))
   }
 
   return (
     <div className="form-check form-switch">
-      <input className="form-check-input" type="checkbox" role="switch" id="poll-switch" defaultChecked={poll.active} onChange={togglePoll}/>
+      <input className="form-check-input" type="checkbox" role="switch" id="poll-switch" defaultChecked={poll.state === 'started'} onChange={togglePoll}/>
     </div>
   )
 }
@@ -42,7 +46,7 @@ const PollResults = ({ canManage }) => {
   }, [id])
 
   if (poll === null) {
-    return <NotFound topMargin={0}/>
+    return <Error topMargin={0}/>
   }
 
   // socket.io code here
@@ -51,7 +55,7 @@ const PollResults = ({ canManage }) => {
     <div id="poll-container" className="container mt-4 col-sm-12 col-md-10 col-lg-7 col-xl-7 col-xxl-7">
       <div className="d-flex justify-content-between align-items-center">
         <div id="question" className="">{poll.question}</div>
-        {canManage ? <PollSwitch poll={poll} setPoll={setPoll}/> : null}
+        {canManage && poll.state !== 'ended' ? <PollSwitch poll={poll} setPoll={setPoll}/> : null}
       </div>
       <div className="mt-4" id="options-container">
         <FlipMove duration="650">
