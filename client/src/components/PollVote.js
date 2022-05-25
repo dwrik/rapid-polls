@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router'
+import { Link } from 'react-router-dom'
 import Error from './Error'
 import pollService from '../services/poll'
 import voteService from '../services/vote'
@@ -15,6 +16,7 @@ const Option = ({ id, value, onClick, isSelected }) => {
 const PollVote = () => {
   const [poll, setPoll] = useState(null)
   const [option, setOption] = useState(null)
+  const [voted, setVoted] = useState(false)
   const [error, setError] = useState(null)
   const { id } = useParams()
 
@@ -37,15 +39,23 @@ const PollVote = () => {
       return
     }
     voteService.vote(id, { option })
-      .then((response) => {
-        console.log(response)
-        // upon successfull voting:
-        //  - thank you message
-        //  - link to results page
+      .then(() => {
+        setVoted(true)
       })
       .catch((error) => {
         setError(error.response.data.error)
       })
+  }
+
+  if (voted) {
+    return (
+      <Error topMargin={0}>
+        <p className='lead text-center'>
+          Thank's for voting!<br/>
+          You can checkout the results in real-time <Link to={`/view/${id}`} className="link-dark">here.</Link>
+        </p>
+      </Error>
+    )
   }
 
   if (poll === null) {
