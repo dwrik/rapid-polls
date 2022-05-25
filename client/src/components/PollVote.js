@@ -36,14 +36,16 @@ const PollVote = () => {
       setError('Please select an option first')
       return
     }
-    voteService.vote(id, option)
+    voteService.vote(id, { option })
       .then((response) => {
         console.log(response)
         // upon successfull voting:
         //  - thank you message
         //  - link to results page
       })
-      .catch((error) => setError(error.response.data.error))
+      .catch((error) => {
+        setError(error.response.data.error)
+      })
   }
 
   if (poll === null) {
