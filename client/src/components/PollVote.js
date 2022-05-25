@@ -64,7 +64,7 @@ const PollVote = () => {
   
   if (poll.state === 'prior') {
     return (
-      <Error>
+      <Error topMargin={0}>
         <p className='lead text-center'>
           You're a bit too early.<br/>
           The poll hasn't started yet!
@@ -75,7 +75,7 @@ const PollVote = () => {
   
   if (poll.state === 'ended') {
     return (
-      <Error>
+      <Error topMargin={0}>
         <p className='lead text-center'>
           Seems like you're a bit too late.<br/>
           The poll has already ended {':('}
