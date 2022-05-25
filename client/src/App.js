@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router'
 import { ToastContainer, Slide } from 'react-toastify'
 
-const Header = () => <h1 className="display-1 mt-4">Live Poll</h1>
+const Header = () => <h1 className="display-1 mt-4">rapid polls</h1>
 
 const VerticalContainer = (props) => {
   return <main className="container d-flex flex-column align-items-center">{props.children}</main>
