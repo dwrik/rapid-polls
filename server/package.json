@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "server for the live-poll application",
+  "description": "server for the rapid-polls application",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
