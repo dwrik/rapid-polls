@@ -19,7 +19,7 @@ const PollVote = () => {
   const { id } = useParams()
 
   useEffect(() => {
-    pollService.get(id)
+    pollService.getInitial(id)
       .then((poll) => setPoll(poll))
       .catch((response) => console.log(response))
   }, [id])

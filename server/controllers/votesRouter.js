@@ -26,6 +26,13 @@ votesRouter.post('/:id', middleware.pollRetriever, async (request, response) => 
     return response.status(400).send({ error: 'Poll is currently not active' })
   }
 
+  if (request.poll === null) {
+    for (const option of poll.options) {
+      await client.ZINCRBY(`options/${id}`, 0, `${option.id} ${option.value}`)
+    }
+    await client.SET(`polls/initial/${id}`, JSON.stringify(poll))
+  }
+
   await client.ZINCRBY(`options/${id}`, 1, `${option.id} ${option.value}`)
   const sortedData = await client.sendCommand(['ZREVRANGE', `options/${id}`, '0', '-1', 'WITHSCORES'])
   const [sortedOptions, totalVotes] = parseData(sortedData)

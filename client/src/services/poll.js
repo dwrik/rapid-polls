@@ -17,5 +17,10 @@ const update = (modified) => {
   return response.then((response) => response.data)
 }
 
-const pollService = { get, create, update }
+const getInitial = (id) => {
+  const response = axios.get(`${baseUrl}/${id}?initial=true`)
+  return response.then((response) => response.data)
+}
+
+const pollService = { get, create, update, getInitial }
 export default pollService

@@ -7,7 +7,8 @@ const requestLogger = (request, response, next) => {
 }
 
 const pollRetriever = async (request, response, next) => {
-  const serialized = await client.GET(`polls/${request.params.id}`)
+  const key = request.query.initial ? 'polls/initial' : 'polls'
+  const serialized = await client.GET(`${key}/${request.params.id}`)
   request.poll = serialized ? JSON.parse(serialized) : null
   next()
 }
