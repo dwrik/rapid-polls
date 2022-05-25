@@ -7,7 +7,8 @@ const requestLogger = (request, response, next) => {
 }
 
 const pollRetriever = async (request, response, next) => {
-  request.poll = await client.HGETALL(request.params.pollId)
+  const serialized = await client.GET(`polls/${request.params.id}`)
+  request.poll = serialized ? JSON.parse(serialized) : null
   next()
 }
 
