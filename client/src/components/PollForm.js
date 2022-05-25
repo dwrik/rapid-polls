@@ -48,7 +48,6 @@ const PollForm = () => {
     }
     pollService.create({ question, options })
       .then((saved) => {
-        console.log(saved)
         setQuestion('')
         setOptions([])
         toast.success('Poll created')
