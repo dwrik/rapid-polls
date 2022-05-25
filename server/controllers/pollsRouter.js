@@ -1,17 +1,19 @@
 const Poll = require('../models/poll')
 const pollsRouter = require('express').Router()
+const middleware = require('../utils/middleware')
+const { client } = require('../databases/redis')
 
 pollsRouter.get('/', async (request, response) => {
   const polls = await Poll.find({})
   response.status(200).json(polls)
 })
 
-pollsRouter.get('/:id', async (request, response) => {
-  const poll = await Poll.findById(request.params.id)
+pollsRouter.get('/:id', middleware.pollRetriever, async (request, response) => {
+  const poll = request.poll ?? await Poll.findById(request.params.id)
   response.status(200).json(poll)
 })
 
-pollsRouter.put('/:id', async (request, response) => {
+pollsRouter.put('/:id', middleware.pollRetriever, async (request, response) => {
   const { id } = request.params
   const { question, options, state, totalVotes } = request.body
 
@@ -24,13 +26,18 @@ pollsRouter.put('/:id', async (request, response) => {
     return response.status(400).json({ error: 'poll has already ended' })
   }
 
-  options.forEach((option) => {
-    option._id = option.id
-    delete option.id
-  })
+  if (state === 'ended') {
+    global.io.to(id).emit('poll-ended')
+    global.io.in(id).disconnectSockets(true)
+    await client.DEL(`polls/${id}`)
+    await client.DEL(`options/${id}`)
+  }
 
-  const modified = { question, options, state, totalVotes }
-  const updated = await Poll.findByIdAndUpdate(id, modified, { new: true, runValidators: true })
+  const changes = request.poll !== null
+    ? { ...request.poll, state }
+    : { state }
+
+  const updated = await Poll.findByIdAndUpdate(id, changes, { new: true, runValidators: true })
   response.json(updated)
 })
 
