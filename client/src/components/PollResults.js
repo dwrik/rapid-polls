@@ -1,6 +1,7 @@
 import { useState, useEffect, forwardRef } from 'react'
 import { useParams } from 'react-router'
 import { toast } from 'react-toastify'
+import { io } from 'socket.io-client'
 import FlipMove from 'react-flip-move'
 import pollService from '../services/poll'
 import Error from './Error'
@@ -28,9 +29,9 @@ const PollSwitch = ({ poll, setPoll }) => {
   )
 }
 
-const Option = forwardRef(({ id, value }, ref) => (
+const Option = forwardRef(({ id, value, count, total }, ref) => (
   <div id={id} ref={ref} className="option-card option-card-result mt-2">
-    <div className='option-background' style={{width: `${Math.random() * 100}%`}}></div>
+    <div className='option-background' style={{width: `${(count / total) * 100}%`}}></div>
     <div className='option-text'>{value}</div>
   </div>
 ))
@@ -39,17 +40,29 @@ const PollResults = ({ canManage }) => {
   const [poll, setPoll] = useState(null)
   const { id } = useParams()
 
+  // const getRandomColor = () => {
+  //   return `hsl(${(Math.random() * 360) + 0}, 60%, 50%)`
+  // }
+
   useEffect(() => {
     pollService.get(id)
-      .then((poll) => setPoll(poll))
-      .catch((response) => console.log(response))
+      .then((poll) => {
+        if (poll.state !== 'ended') {
+          const socket = io()
+          socket.on('poll-updated', (poll) => setPoll(poll))
+          socket.on('send-poll-id', () => socket.emit('poll-id-sent', poll.id))
+          socket.on('poll-ended', () => socket.disconnect() && console.log('disconnected from socket.io server'))
+        }
+        setPoll(poll)
+      })
+      .catch((response) => {
+        console.log(response)
+      })
   }, [id])
 
   if (poll === null) {
     return <Error topMargin={0}/>
   }
-
-  // socket.io code here
 
   return (
     <div id="poll-container" className="container mt-4 col-sm-12 col-md-10 col-lg-7 col-xl-7 col-xxl-7">
@@ -59,8 +72,8 @@ const PollResults = ({ canManage }) => {
       </div>
       <div className="mt-4" id="options-container">
         <FlipMove duration="650">
-          {poll.options.map(({ id, value }) => {
-            return <Option id={id} key={id} value={value}/>
+          {poll.options.map(({ id, value, count }) => {
+            return <Option id={id} key={id} value={value} count={count} total={poll.totalVotes}/>
           })}
         </FlipMove>
       </div>
