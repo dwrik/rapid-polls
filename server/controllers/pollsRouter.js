@@ -29,6 +29,8 @@ pollsRouter.put('/:id', middleware.pollRetriever, async (request, response) => {
   if (state === 'ended') {
     global.io.to(id).emit('poll-ended')
     global.io.in(id).disconnectSockets(true)
+
+    await client.DEL(`polls/initial/${id}`)
     await client.DEL(`polls/${id}`)
     await client.DEL(`options/${id}`)
   }
