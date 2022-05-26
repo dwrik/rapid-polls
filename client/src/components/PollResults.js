@@ -29,12 +29,20 @@ const PollSwitch = ({ poll, setPoll }) => {
   )
 }
 
-const Option = forwardRef(({ id, value, count, total }, ref) => (
-  <div id={id} ref={ref} className="option-card option-card-result mt-2">
-    <div className='option-background' style={{width: `${(count / total) * 100}%`}}></div>
-    <div className='option-text'>{value}</div>
-  </div>
-))
+const Option = forwardRef(({ id, value, count, total }, ref) => {
+  const percentage = Math.round((count / total) * 100)
+  return (
+    <div id={id} ref={ref} className="option-card option-card-result mt-2">
+      <div className='option-background' style={{width: `${percentage}%`}}></div>
+      <div className="w-100 d-flex justify-content-between align-items-center position-absolute px-3">
+        <div>{value}</div>
+        <div className="percentage-text">
+          <b>{percentage}%</b>
+        </div>
+      </div>
+    </div>
+  )
+})
 
 const PollResults = ({ canManage }) => {
   const [poll, setPoll] = useState(null)

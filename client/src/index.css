@@ -82,9 +82,9 @@ html, body, #root {
   background-color: rgba(230, 230, 230, 0.4);
 }
 
-.option-text {
-  position: absolute;
-  margin-left: 20px;
+.percentage-text {
+  font-size: 0.9em;
+  color:rgba(160, 160, 160, 0.9)
 }
 
 #poll-switch {
