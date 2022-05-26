@@ -8,6 +8,7 @@ import {
 import App from './App'
 import Error from './components/Error'
 
+import Home from './routes/home'
 import View from './routes/view'
 import Vote from './routes/vote'
 import Create from './routes/create'
@@ -26,6 +27,7 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App/>}>
+        <Route index element={<Home/>}/>
         <Route path="create" element={<Create/>}/>
         <Route path="manage/:id" element={<Manage/>}/>
         <Route path="view/:id" element={<View/>}/>
