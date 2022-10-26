@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build:ui": "cd ../client && rm -rf build && npm run build && cp -r build ../server",
+    "build:ui": "cd ../client && rm -rf build && npm install --omit dev && npm run build && cp -r build ../server",
     "deploy": "cd ../ && git subtree push --prefix=server heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m build && npm run deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
