@@ -1,8 +1,8 @@
-import { useState, useEffect, forwardRef } from 'react'
-import { useParams } from 'react-router'
-import { toast } from 'react-toastify'
-import { io } from 'socket.io-client'
+import {forwardRef, useEffect, useState} from 'react'
 import FlipMove from 'react-flip-move'
+import {useParams} from 'react-router'
+import {toast} from 'react-toastify'
+import {io} from 'socket.io-client'
 import pollService from '../services/poll'
 import Error from './Error'
 
@@ -30,7 +30,7 @@ const PollSwitch = ({ poll, setPoll }) => {
 }
 
 const Option = forwardRef(({ id, value, count, total }, ref) => {
-  const percentage = Math.round((count / total) * 100)
+  const percentage = count === 0 && total === 0 ? 0 : Math.round((count / total) * 100)
   return (
     <div id={id} ref={ref} className="option-card option-card-result mt-2">
       <div className='option-background' style={{width: `${percentage}%`}}></div>
